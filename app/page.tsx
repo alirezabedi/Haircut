@@ -1,3 +1,4 @@
+import { Fresh } from "@/components/fresh";
 import { Screen } from "@/components/screen";
 import { StartActions } from "@/components/start-actions";
 import { TopBar, Wordmark } from "@/components/top-bar";
@@ -40,7 +41,9 @@ export default function StartPage() {
         </ol>
       </div>
 
-      <StartActions />
+      <Fresh>
+        <StartActions />
+      </Fresh>
     </Screen>
   );
 }

@@ -11,6 +11,8 @@ type CreditsContextValue = {
   setOpen: (open: boolean) => void;
   /** Fake purchase for M1: adds 100 credits locally. Real billing arrives in M5. */
   buy: () => void;
+  /** Fake charge for M1: one credit per customer session. */
+  charge: () => void;
 };
 
 const CreditsContext = createContext<CreditsContextValue | null>(null);
@@ -37,6 +39,7 @@ export function CreditsProvider({ children }: { children: React.ReactNode }) {
     open,
     setOpen,
     buy: () => setRemaining((n) => n + 100),
+    charge: () => setRemaining((n) => Math.max(0, n - 1)),
   };
 
   return (

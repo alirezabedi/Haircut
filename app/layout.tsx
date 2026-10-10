@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { CreditsProvider } from "@/components/credits/credits-provider";
+import { DemoSessionProvider } from "@/components/demo-session-provider";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import "./globals.css";
 
@@ -45,7 +46,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <CreditsProvider>{children}</CreditsProvider>
+        <CreditsProvider>
+          <DemoSessionProvider>{children}</DemoSessionProvider>
+        </CreditsProvider>
         <ServiceWorkerRegister />
       </body>
     </html>

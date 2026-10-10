@@ -22,7 +22,7 @@ export function CaptureSlot({ angle, label, state, imageSrc, onTap, className }:
     <button
       type="button"
       onClick={onTap}
-      aria-label={done ? `${label}: photo taken. Tap to retake` : `${label}: take photo`}
+      aria-label={done ? `${label} photo taken. Tap to retake` : `Take ${label.toLowerCase()} photo`}
       className={cn(
         "relative flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-lg",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-ink",
@@ -36,7 +36,7 @@ export function CaptureSlot({ angle, label, state, imageSrc, onTap, className }:
       {done ? (
         <>
           <Image src={imageSrc} alt="" fill sizes="(max-width: 430px) 50vw, 200px" unoptimized className="object-cover" />
-          <span className="absolute top-2 right-2 flex size-[22px] items-center justify-center rounded-full bg-primary text-on-primary">
+          <span className="absolute top-2.5 right-2.5 flex size-6 items-center justify-center rounded-full bg-primary text-on-primary">
             <Check className="size-3.5" strokeWidth={2.5} aria-hidden />
           </span>
         </>
@@ -45,7 +45,7 @@ export function CaptureSlot({ angle, label, state, imageSrc, onTap, className }:
       )}
       <span
         className={cn(
-          "type-label absolute bottom-2 left-2",
+          "type-label absolute bottom-2.5 left-2.5",
           done && "text-background [text-shadow:0_1px_2px_rgb(0_0_0/0.6)]",
         )}
       >
