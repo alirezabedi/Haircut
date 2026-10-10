@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { CreditsProvider } from "@/components/credits/credits-provider";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import "./globals.css";
 
@@ -15,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Haircut",
-  description: "See your cut before the clippers come out.",
+  description: "See your cut before the first snip.",
   applicationName: "Haircut",
   appleWebApp: {
     capable: true,
@@ -32,10 +33,9 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8f7f2" },
-    { media: "(prefers-color-scheme: dark)", color: "#141412" },
-  ],
+  // Light theme only for now (dark tokens stay in globals.css, unwired).
+  themeColor: "#f8f7f2",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {children}
+        <CreditsProvider>{children}</CreditsProvider>
         <ServiceWorkerRegister />
       </body>
     </html>

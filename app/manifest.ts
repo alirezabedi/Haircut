@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Haircut",
     short_name: "Haircut",
-    description: "See your cut before the clippers come out.",
+    description: "See your cut before the first snip.",
     start_url: "/",
     scope: "/",
     display: "standalone",

@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Let phones on the same Wi-Fi load the dev server (private LAN addresses only).
+  allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "172.*.*.*", "*.local"],
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
