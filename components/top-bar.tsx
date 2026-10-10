@@ -14,7 +14,7 @@ type Props = {
 };
 
 export function TopBar({ backHref, left, step }: Props) {
-  const { remaining, total, setOpen } = useCredits();
+  const { remaining, setOpen } = useCredits();
   return (
     <header className="flex h-11 items-center justify-between">
       {backHref ? (
@@ -30,7 +30,7 @@ export function TopBar({ backHref, left, step }: Props) {
       )}
       {step && <span className="type-label text-muted-foreground">{step}</span>}
       {!backHref && !left && !step && <span />}
-      <CreditCounter remaining={remaining} total={total} onOpen={() => setOpen(true)} />
+      <CreditCounter remaining={remaining} onOpen={() => setOpen(true)} />
     </header>
   );
 }

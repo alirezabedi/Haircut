@@ -15,7 +15,7 @@ One shared device (the barber's phone or a tablet) logged in as the shop. The cu
 3. **Voice note** (`/s/[id]/voice`) — record with `MediaRecorder` (support both `audio/webm` and `audio/mp4` for iOS Safari). Max 90 s, auto-stop. After stopping, upload and show the transcript in "What we heard". Buttons: Record again, Create preview. Fallback: a textarea "Or type it" if mic permission is denied.
 4. **Processing** (`/s/[id]/processing`) — poll status every 2 s. Checklist: transcribed → spec ready → image generating. Typical 20–60 s.
 5. **Result** (`/s/[id]/result`) — before/after slider (front photo vs preview), spec card, buttons "Try again" (shows tries left) and "Approve this cut". Try again lets the customer record or type an adjustment ("a bit shorter on top"), then regenerates. Approve marks the session approved and returns to Start.
-6. **Credits sheet** — opened from the credit counter pill shown top-right on every screen. Shows remaining credits (`n of 100`), meter (turns `destructive` at ≤ 10), "Buy 100 more · £10", and the last 20 sessions (thumbnail, cut name, time, status). Tapping a session opens its result read-only.
+6. **Credits sheet** — opened from the credit counter pill shown top-right on every screen. Shows remaining credits as a plain number (`73` in the pill, "73 credits left" in the sheet; no "of 100"), meter (full at 100 or more, scales below 100, turns `destructive` at ≤ 10), "Buy 100 more · £10", and the last 20 sessions (thumbnail, cut name, time, status). Tapping a session opens its result read-only.
 
 Design for each screen: `docs/design/screens/` (match layout, spacing and copy).
 

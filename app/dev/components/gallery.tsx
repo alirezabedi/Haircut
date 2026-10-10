@@ -82,8 +82,8 @@ export function ComponentGallery() {
 
       <Section title="CreditCounter">
         <div className="flex gap-4">
-          <CreditCounter remaining={73} total={100} onOpen={() => {}} />
-          <CreditCounter remaining={6} total={100} onOpen={() => {}} />
+          <CreditCounter remaining={73} onOpen={() => {}} />
+          <CreditCounter remaining={6} onOpen={() => {}} />
         </div>
       </Section>
 

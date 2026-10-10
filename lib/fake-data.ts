@@ -26,7 +26,7 @@ export type HaircutSpec = {
 
 export const fakeShop = { name: "[Shop name]", city: "London" };
 
-export const fakeCredits = { remaining: 73, total: 100 };
+export const fakeCredits = { remaining: 73 };
 
 export const DEMO_SESSION_ID = "demo";
 

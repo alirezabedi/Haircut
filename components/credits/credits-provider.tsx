@@ -7,7 +7,6 @@ import { fakeCredits } from "@/lib/fake-data";
 
 type CreditsContextValue = {
   remaining: number;
-  total: number;
   open: boolean;
   setOpen: (open: boolean) => void;
   /** Fake purchase for M1: adds 100 credits locally. Real billing arrives in M5. */
@@ -35,7 +34,6 @@ export function CreditsProvider({ children }: { children: React.ReactNode }) {
 
   const value: CreditsContextValue = {
     remaining,
-    total: fakeCredits.total,
     open,
     setOpen,
     buy: () => setRemaining((n) => n + 100),

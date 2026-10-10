@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { LOW_CREDITS } from "@/components/credit-counter";
 import { useCredits } from "@/components/credits/credits-provider";
 import { HistoryItem } from "@/components/history-item";
 import { Button } from "@/components/ui/button";
@@ -12,24 +11,26 @@ import {
   DrawerDescription,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import { isLow, meterFill } from "@/lib/credits-meter";
 import { fakeHistory } from "@/lib/fake-data";
 import { cn } from "@/lib/utils";
 
 /** Bottom sheet: credits left, "Buy 100 more", and the last 20 sessions. */
 export function CreditsSheet() {
-  const { remaining, total, open, setOpen, buy } = useCredits();
+  const { remaining, open, setOpen, buy } = useCredits();
   const [justBought, setJustBought] = useState(false);
-  const low = remaining <= LOW_CREDITS;
-  const fill = Math.min(100, Math.max(0, (remaining / total) * 100));
+  const low = isLow(remaining);
 
   const balance = (
     <div className="flex flex-col gap-3 rounded-lg bg-muted p-4">
       <div className="flex items-baseline gap-2">
         <span className="font-mono text-4xl leading-10 font-medium">{remaining}</span>
-        <span className="type-numeric font-normal text-muted-foreground">of {total} left</span>
+        <span className="type-numeric font-normal text-muted-foreground">
+          {remaining === 1 ? "credit" : "credits"} left
+        </span>
       </div>
       <span className="flex h-2 overflow-hidden rounded-full bg-card" aria-hidden>
-        <span className={cn("h-full", low ? "bg-destructive" : "bg-primary")} style={{ width: `${fill}%` }} />
+        <span className={cn("h-full", low ? "bg-destructive" : "bg-primary")} style={{ width: `${meterFill(remaining)}%` }} />
       </span>
       <p className="type-body-sm text-muted-foreground">
         {remaining === 0
