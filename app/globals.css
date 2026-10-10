@@ -203,3 +203,45 @@
     cursor: pointer;
   }
 }
+
+/* Type styles from docs/design/tokens.json (display/title tracking follow the screen files). */
+@utility type-display {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  line-height: 40px;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+@utility type-title {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+}
+@utility type-heading {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 600;
+}
+@utility type-body {
+  font-size: 16px;
+  line-height: 24px;
+}
+@utility type-body-sm {
+  font-size: 14px;
+  line-height: 20px;
+}
+@utility type-label {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+@utility type-numeric {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
