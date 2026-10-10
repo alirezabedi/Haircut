@@ -89,6 +89,9 @@ export const fakeHistory: HistoryEntry[] = [
 export const fakeTranscript =
   "Skin fade on the sides, about a number half going up to a two. Keep some length on top, maybe five centimetres, and texture it. Taper the back and leave the beard as it is.";
 
+export const fakeAdjustmentTranscript =
+  "A bit shorter on top, and make the fade a little softer.";
+
 export const fakeSpec: HaircutSpec = {
   name: "Skin fade, textured top",
   sides: "Skin fade, #0.5 → #2",
@@ -101,4 +104,4 @@ export const fakeSpec: HaircutSpec = {
 };
 
 export const fakeFeasibilityWarning =
-  "Your hair is about 3 cm on top now, so 5 cm isn't possible today. The preview keeps the length you have.";
+  "Your hair is about 3 cm on top now, so 5 cm isn’t possible today. The preview keeps the length you have.";
