@@ -1,0 +1,15 @@
+<!-- @dsCard group="Account" height=120 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>body{margin:0;background:var(--background);color:var(--foreground);font-family:var(--font-sans);letter-spacing:-0.02em}*{box-sizing:border-box}.row{padding:24px;display:flex;gap:24px}
+.cc{display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border-radius:9999px;border:0;background:var(--card);box-shadow:var(--shadow-sm);color:var(--foreground);cursor:pointer}
+.cc:focus-visible{outline:2px solid var(--primary-ink);outline-offset:2px}
+.meter{width:40px;height:6px;border-radius:9999px;background:var(--muted);overflow:hidden}
+.meter span{display:block;height:100%;background:var(--primary)}
+.low .meter span{background:var(--destructive)}
+.n{font:500 14px/20px var(--font-mono)}
+.of{font:500 14px/20px var(--font-mono);color:var(--muted-foreground)}</style>
+<div class="row">
+ <button class="cc"><span class="meter"><span style="width:73%"></span></span><span class="n">73</span><span class="of">/100</span></button>
+ <button class="cc low"><span class="meter"><span style="width:6%"></span></span><span class="n">6</span><span class="of">/100</span></button>
+</div>
+<script></script>
