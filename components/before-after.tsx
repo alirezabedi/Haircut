@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowLeftRight } from "lucide-react";
+import { ChevronsLeftRight } from "lucide-react";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -51,9 +51,9 @@ export function BeforeAfter({ beforeSrc, afterSrc, initialSplit = 50, className 
       onPointerUp={() => (dragging.current = false)}
       onPointerCancel={() => (dragging.current = false)}
     >
-      <Image src={beforeSrc} alt="Your photo before the cut" fill sizes="430px" unoptimized draggable={false} className="object-cover" />
+      <Image src={beforeSrc} alt="Your photo before the cut" fill sizes="430px" unoptimized loading="eager" draggable={false} className="object-cover" />
       <div className="absolute inset-0" style={{ clipPath: `inset(0 0 0 ${split}%)` }}>
-        <Image src={afterSrc} alt="Preview of the new cut" fill sizes="430px" unoptimized draggable={false} className="object-cover" />
+        <Image src={afterSrc} alt="Preview of the new cut" fill sizes="430px" unoptimized loading="eager" draggable={false} className="object-cover" />
       </div>
 
       <span className="type-label absolute top-3 left-3 rounded-sm bg-card px-2 py-1 text-foreground">Before</span>
@@ -63,7 +63,7 @@ export function BeforeAfter({ beforeSrc, afterSrc, initialSplit = 50, className 
         <div
           role="slider"
           tabIndex={0}
-          aria-label="Compare before and preview"
+          aria-label="Drag to compare"
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(split)}
@@ -71,8 +71,8 @@ export function BeforeAfter({ beforeSrc, afterSrc, initialSplit = 50, className 
           onKeyDown={onKeyDown}
           className="absolute top-1/2 left-1/2 flex size-11 -translate-1/2 cursor-ew-resize items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-ink"
         >
-          <span className="flex size-10 items-center justify-center rounded-full bg-card text-foreground shadow-md">
-            <ArrowLeftRight className="size-5" strokeWidth={1.5} aria-hidden />
+          <span className="flex size-11 items-center justify-center rounded-full bg-card text-foreground shadow-md">
+            <ChevronsLeftRight className="size-5" strokeWidth={1.5} aria-hidden />
           </span>
         </div>
       </div>
