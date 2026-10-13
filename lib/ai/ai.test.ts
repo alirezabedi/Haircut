@@ -62,7 +62,8 @@ describe("parseSpec", () => {
   });
 
   it("rejects missing fields, wrong types and empty names", () => {
-    const { notes: _notes, ...missing } = SPEC;
+    const missing: Partial<HaircutSpec> = { ...SPEC };
+    delete missing.notes;
     expect(() => parseSpec(JSON.stringify(missing))).toThrow(/notes/);
     expect(() => parseSpec(JSON.stringify({ ...SPEC, top: 5 }))).toThrow(/top/);
     expect(() => parseSpec(JSON.stringify({ ...SPEC, name: " " }))).toThrow(/name/);
