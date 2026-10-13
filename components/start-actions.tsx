@@ -1,26 +1,30 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { startSession, type StartState } from "@/app/(shop)/actions";
 import { useCredits } from "@/components/credits/credits-provider";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DEMO_SESSION_ID } from "@/lib/fake-data";
 
 /** Consent checkbox + Start. Start needs consent and at least one credit. */
 export function StartActions() {
-  const { remaining } = useCredits();
+  const { remaining, setOpen } = useCredits();
   const [consent, setConsent] = useState(false);
+  const [state, action, pending] = useActionState<StartState, FormData>(startSession, null);
   const noCredits = remaining <= 0;
-  const canStart = consent && !noCredits;
+
+  // With 0 credits, the sheet opens with the buy button (docs/SPEC.md §4).
+  useEffect(() => {
+    if (noCredits) setOpen(true);
+  }, [noCredits, setOpen]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <form action={action} className="flex flex-col gap-4">
       <label className="type-body-sm flex min-h-11 cursor-pointer items-start gap-3 text-muted-foreground">
         <Checkbox
+          name="consent"
           checked={consent}
           onCheckedChange={(v) => setConsent(v === true)}
-          className="mt-0"
         />
         <span>
           I agree my photos and voice note are used to make this preview. They are deleted after 7
@@ -33,16 +37,15 @@ export function StartActions() {
           No previews left. Tap the counter at the top to buy more.
         </p>
       )}
-
-      {canStart ? (
-        <Button size="cta" asChild>
-          <Link href={`/s/${DEMO_SESSION_ID}/photos`}>Start</Link>
-        </Button>
-      ) : (
-        <Button size="cta" disabled>
-          Start
-        </Button>
+      {state && (
+        <p role="alert" className="type-body-sm text-destructive">
+          {state.error}
+        </p>
       )}
-    </div>
+
+      <Button size="cta" type="submit" disabled={!consent || noCredits || pending}>
+        {pending ? "Starting…" : "Start"}
+      </Button>
+    </form>
   );
 }

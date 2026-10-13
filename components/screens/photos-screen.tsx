@@ -2,28 +2,57 @@
 
 import Link from "next/link";
 import { Camera } from "lucide-react";
+import { useRef, useState } from "react";
 import { CaptureSlot, type CaptureState } from "@/components/capture-slot";
-import { useDemoSession } from "@/components/demo-session-provider";
 import { Screen } from "@/components/screen";
 import { TopBar } from "@/components/top-bar";
 import { Button } from "@/components/ui/button";
-import { type Angle, fakePhotos } from "@/lib/fake-data";
+import { resizePhoto } from "@/lib/client/resize-photo";
+import { ANGLE_LABEL, ANGLES, type Angle } from "@/lib/types";
 
-const SLOTS: { angle: Angle; label: string }[] = [
-  { angle: "front", label: "Front" },
-  { angle: "left", label: "Left side" },
-  { angle: "right", label: "Right side" },
-  { angle: "back", label: "Back" },
-];
+type Props = { sessionId: string; initialPhotos: Partial<Record<Angle, string>> };
 
-export function PhotosScreen({ sessionId }: { sessionId: string }) {
-  const { photos, takePhoto } = useDemoSession();
-  const next = SLOTS.find((s) => !photos.includes(s.angle));
-  const count = photos.length;
+export function PhotosScreen({ sessionId, initialPhotos }: Props) {
+  const [photos, setPhotos] = useState(initialPhotos);
+  const [uploading, setUploading] = useState<Angle | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const input = useRef<HTMLInputElement>(null);
+  const target = useRef<Angle>("front");
 
-  // M1: "taking" a photo fills the slot with a sample image. The camera arrives in M2.
+  const next = ANGLES.find((a) => !photos[a]);
+  const count = ANGLES.filter((a) => photos[a]).length;
+
+  function openCamera(angle: Angle) {
+    if (uploading) return;
+    target.current = angle;
+    setError(null);
+    input.current?.click();
+  }
+
+  async function onFile(file: File | undefined) {
+    if (!file) return;
+    const angle = target.current;
+    setUploading(angle);
+    try {
+      const jpeg = await resizePhoto(file);
+      const res = await fetch(`/api/sessions/${sessionId}/photos/${angle}`, {
+        method: "POST",
+        headers: { "Content-Type": "image/jpeg" },
+        body: jpeg,
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const { url } = (await res.json()) as { url: string };
+      setPhotos((p) => ({ ...p, [angle]: url }));
+    } catch {
+      setError(`Couldn’t save the ${ANGLE_LABEL[angle].toLowerCase()} photo. Tap the slot to try again.`);
+    } finally {
+      setUploading(null);
+      if (input.current) input.current.value = "";
+    }
+  }
+
   const state = (angle: Angle): CaptureState =>
-    photos.includes(angle) ? "done" : angle === next?.angle ? "active" : "empty";
+    photos[angle] ? "done" : angle === next ? "active" : "empty";
 
   return (
     <Screen className="gap-6">
@@ -36,18 +65,34 @@ export function PhotosScreen({ sessionId }: { sessionId: string }) {
         </p>
       </div>
 
+      <input
+        ref={input}
+        type="file"
+        accept="image/*"
+        capture="user"
+        className="hidden"
+        onChange={(e) => onFile(e.target.files?.[0])}
+      />
+
       <div className="grid grid-cols-2 gap-3">
-        {SLOTS.map(({ angle, label }) => (
+        {ANGLES.map((angle) => (
           <CaptureSlot
             key={angle}
             angle={angle}
-            label={label}
+            label={ANGLE_LABEL[angle]}
             state={state(angle)}
-            imageSrc={fakePhotos[angle]}
-            onTap={() => takePhoto(angle)}
+            imageSrc={photos[angle]}
+            busy={uploading === angle}
+            onTap={() => openCamera(angle)}
           />
         ))}
       </div>
+
+      {error && (
+        <p role="alert" className="type-body-sm text-destructive">
+          {error}
+        </p>
+      )}
 
       <div className="grow" />
 
@@ -69,9 +114,9 @@ export function PhotosScreen({ sessionId }: { sessionId: string }) {
         </div>
 
         {next ? (
-          <Button size="cta" onClick={() => takePhoto(next.angle)}>
+          <Button size="cta" disabled={uploading !== null} onClick={() => openCamera(next)}>
             <Camera strokeWidth={1.5} aria-hidden />
-            Take {next.label.toLowerCase()} photo
+            {uploading ? "Saving photo…" : `Take ${ANGLE_LABEL[next].toLowerCase()} photo`}
           </Button>
         ) : (
           <Button size="cta" asChild>

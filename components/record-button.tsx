@@ -1,7 +1,6 @@
 import { formatDuration } from "@/lib/format";
+import { MAX_RECORDING_SECONDS } from "@/lib/client/use-recorder";
 import { cn } from "@/lib/utils";
-
-export const MAX_RECORDING_SECONDS = 90;
 
 type Props = {
   recording: boolean;

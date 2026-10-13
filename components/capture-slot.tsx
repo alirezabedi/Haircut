@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Check } from "lucide-react";
 import { HeadSilhouette } from "@/components/head-silhouette";
-import type { Angle } from "@/lib/fake-data";
+import type { Angle } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export type CaptureState = "empty" | "active" | "done";
@@ -11,17 +11,20 @@ type Props = {
   label: string;
   state: CaptureState;
   imageSrc?: string;
+  /** Uploading: dims the slot and says so. */
+  busy?: boolean;
   onTap: () => void;
   className?: string;
 };
 
 /** One of the four photo slots. Tapping opens the camera (or retakes when done). */
-export function CaptureSlot({ angle, label, state, imageSrc, onTap, className }: Props) {
+export function CaptureSlot({ angle, label, state, imageSrc, busy, onTap, className }: Props) {
   const done = state === "done" && imageSrc;
   return (
     <button
       type="button"
       onClick={onTap}
+      aria-busy={busy || undefined}
       aria-label={done ? `${label} photo taken. Tap to retake` : `Take ${label.toLowerCase()} photo`}
       className={cn(
         "relative flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-lg",
@@ -51,6 +54,11 @@ export function CaptureSlot({ angle, label, state, imageSrc, onTap, className }:
       >
         {label}
       </span>
+      {busy && (
+        <span className="type-body-sm absolute inset-0 flex items-center justify-center bg-card/80 text-foreground">
+          Saving…
+        </span>
+      )}
     </button>
   );
 }

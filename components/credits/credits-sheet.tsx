@@ -12,13 +12,12 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { isLow, meterFill } from "@/lib/credits-meter";
-import { fakeHistory } from "@/lib/fake-data";
 import { cn } from "@/lib/utils";
 
 /** Bottom sheet: credits left, "Buy 100 more", and the last 20 sessions. */
 export function CreditsSheet() {
-  const { remaining, open, setOpen, buy } = useCredits();
-  const [justBought, setJustBought] = useState(false);
+  const { remaining, history, open, setOpen, buy } = useCredits();
+  const [purchase, setPurchase] = useState<"idle" | "buying" | "done" | "failed">("idle");
   const low = isLow(remaining);
 
   const balance = (
@@ -44,15 +43,19 @@ export function CreditsSheet() {
     <div className="flex flex-col gap-2">
       <Button
         size="cta"
-        onClick={() => {
-          buy();
-          setJustBought(true);
+        disabled={purchase === "buying"}
+        onClick={async () => {
+          setPurchase("buying");
+          setPurchase((await buy()) ? "done" : "failed");
         }}
       >
-        Buy 100 more · £10
+        {purchase === "buying" ? "Adding credits…" : "Buy 100 more · £10"}
       </Button>
-      <p role="status" className="type-body-sm text-center text-muted-foreground empty:hidden">
-        {justBought ? "100 credits added." : ""}
+      <p
+        role="status"
+        className={cn("type-body-sm text-center empty:hidden", purchase === "failed" ? "text-destructive" : "text-muted-foreground")}
+      >
+        {purchase === "done" ? "100 credits added." : purchase === "failed" ? "That didn’t go through. Try again." : ""}
       </p>
     </div>
   );
@@ -62,7 +65,7 @@ export function CreditsSheet() {
       open={open}
       onOpenChange={(next) => {
         setOpen(next);
-        if (!next) setJustBought(false);
+        if (!next) setPurchase("idle");
       }}
     >
       <DrawerContent className="mx-auto max-h-[85dvh] max-w-[430px]">
@@ -93,19 +96,25 @@ export function CreditsSheet() {
           )}
 
           <h2 className="type-label mt-1 text-muted-foreground">Recent previews</h2>
-          <div className="flex flex-col border-t border-border">
-            {fakeHistory.slice(0, 20).map((s) => (
-              <HistoryItem
-                key={s.id}
-                href={`/s/${s.id}/result`}
-                name={s.name}
-                thumbnail={s.thumbnail}
-                createdAt={s.createdAt}
-                status={s.status}
-                onNavigate={() => setOpen(false)}
-              />
-            ))}
-          </div>
+          {history.length === 0 ? (
+            <p className="type-body-sm text-muted-foreground">
+              Previews appear here once your first customer has one.
+            </p>
+          ) : (
+            <div className="flex flex-col border-t border-border">
+              {history.map((s) => (
+                <HistoryItem
+                  key={s.sessionId}
+                  href={`/s/${s.sessionId}/result?from=history`}
+                  name={s.name}
+                  thumbnail={s.thumbnail}
+                  createdAt={new Date(s.createdAt)}
+                  status={s.status}
+                  onNavigate={() => setOpen(false)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </DrawerContent>
     </Drawer>

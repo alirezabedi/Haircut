@@ -1,49 +1,57 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createContext, useContext, useState } from "react";
 import { CreditsSheet } from "@/components/credits/credits-sheet";
-import { readDevState } from "@/lib/dev-state";
-import { fakeCredits } from "@/lib/fake-data";
+import type { SessionStatus } from "@/lib/types";
+
+export type HistoryEntry = {
+  sessionId: string;
+  name: string;
+  thumbnail: string | null;
+  createdAt: number;
+  status: SessionStatus;
+};
 
 type CreditsContextValue = {
   remaining: number;
+  history: HistoryEntry[];
   open: boolean;
   setOpen: (open: boolean) => void;
-  /** Fake purchase for M1: adds 100 credits locally. Real billing arrives in M5. */
-  buy: () => void;
-  /** Fake charge for M1: one credit per customer session. */
-  charge: () => void;
+  /** Buys 100 credits through the billing interface. Resolves true once they're added. */
+  buy: () => Promise<boolean>;
 };
 
 const CreditsContext = createContext<CreditsContextValue | null>(null);
 
-export function CreditsProvider({ children }: { children: React.ReactNode }) {
-  const [remaining, setRemaining] = useState(fakeCredits.remaining);
+/** Balance and history come from the server layout; this holds the sheet state. */
+export function CreditsProvider({
+  remaining,
+  history,
+  children,
+}: {
+  remaining: number;
+  history: HistoryEntry[];
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    // Dev-only ?state=no-credits / low-credits. Read after mount so markup matches the server.
-    const state = readDevState(window.location.search);
-    /* eslint-disable react-hooks/set-state-in-effect */
-    if (state === "no-credits") {
-      setRemaining(0);
-      setOpen(true);
-    } else if (state === "low-credits") {
-      setRemaining(6);
+  async function buy(): Promise<boolean> {
+    const res = await fetch("/api/credits/purchase", { method: "POST" });
+    if (!res.ok) return false;
+    const result = (await res.json()) as { redirectUrl?: string; completed?: boolean };
+    // A future Stripe implementation returns a checkout URL instead of completing here.
+    if (result.redirectUrl) {
+      window.location.href = result.redirectUrl;
+      return false;
     }
-    /* eslint-enable react-hooks/set-state-in-effect */
-  }, []);
-
-  const value: CreditsContextValue = {
-    remaining,
-    open,
-    setOpen,
-    buy: () => setRemaining((n) => n + 100),
-    charge: () => setRemaining((n) => Math.max(0, n - 1)),
-  };
+    router.refresh();
+    return Boolean(result.completed);
+  }
 
   return (
-    <CreditsContext value={value}>
+    <CreditsContext value={{ remaining, history, open, setOpen, buy }}>
       {children}
       <CreditsSheet />
     </CreditsContext>

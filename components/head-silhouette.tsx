@@ -1,4 +1,4 @@
-import type { Angle } from "@/lib/fake-data";
+import type { Angle } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 // Outlines from docs/design/screens/2-photos.html (front from the CaptureSlot preview).

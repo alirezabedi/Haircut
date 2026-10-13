@@ -1,10 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Let phones on the same Wi-Fi load the dev server (private LAN addresses only).
-  allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "172.*.*.*", "*.local"],
-  cacheComponents: true,
-  partialPrefetching: true,
+  // Let phones load the dev server over the Wi-Fi or an HTTPS tunnel (docs/TESTING.md).
+  allowedDevOrigins: [
+    "192.168.*.*",
+    "10.*.*.*",
+    "172.*.*.*",
+    "*.local",
+    "*.trycloudflare.com",
+    "*.ngrok-free.app",
+    "*.ngrok-free.dev",
+  ],
+  // better-sqlite3 is a native module; keep it out of the server bundle.
+  serverExternalPackages: ["better-sqlite3"],
   turbopack: {
     rules: {
       "*.css": {
