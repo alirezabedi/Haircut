@@ -39,7 +39,12 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
   if (!first) return { error: "The shop isn’t set up yet. Run npm run db:migrate." };
 
   const h = await headers();
-  const https = h.get("x-forwarded-proto") === "https" || process.env.NODE_ENV === "production";
+  // Secure in production and on any HTTPS origin (e.g. the phone-testing tunnel); plain
+  // http://localhost and LAN addresses can't hold Secure cookies.
+  const https =
+    process.env.NODE_ENV === "production" ||
+    h.get("x-forwarded-proto") === "https" ||
+    (h.get("origin") ?? "").startsWith("https://");
   (await cookies()).set(COOKIE_NAME, createToken(first.id, process.env.SESSION_SECRET ?? ""), {
     httpOnly: true,
     secure: https,

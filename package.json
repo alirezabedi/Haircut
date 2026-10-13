@@ -12,7 +12,8 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check:openai": "tsx --env-file=.env.local scripts/check-openai.ts"
+    "check:openai": "tsx --env-file=.env.local scripts/check-openai.ts",
+    "tunnel": "cloudflared tunnel --url http://localhost:3000"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
