@@ -11,7 +11,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:openai": "tsx --env-file=.env.local scripts/check-openai.ts"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
@@ -20,6 +21,7 @@
     "drizzle-orm": "^0.45.4",
     "lucide-react": "^1.55.0",
     "next": "16.4.0",
+    "openai": "^7.32.0",
     "radix-ui": "^1.7.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
